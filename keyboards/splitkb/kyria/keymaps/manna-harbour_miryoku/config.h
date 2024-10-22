@@ -34,3 +34,31 @@ XXX, K20, K21, K22, K23, K24, XXX, XXX,      XXX, XXX, K25, K26, K27, K28, K29, 
                XXX, K32, K33, K34, XXX,      XXX, K35, K36, K37, XXX \
 )
 #endif
+
+// #ifdef RGBLIGHT_ENABLE
+//     #define RGBLIGHT_EFFECT_BREATHING
+//     #define RGBLIGHT_EFFECT_RAINBOW_MOOD
+//     #define RGBLIGHT_EFFECT_RAINBOW_SWIRL
+//     #define RGBLIGHT_EFFECT_SNAKE
+//     #define RGBLIGHT_EFFECT_KNIGHT
+//     #define RGBLIGHT_EFFECT_CHRISTMAS
+//     #define RGBLIGHT_EFFECT_STATIC_GRADIENT
+//     #define RGBLIGHT_EFFECT_RGB_TEST
+//     #define RGBLIGHT_EFFECT_ALTERNATING
+//     #define RGBLIGHT_EFFECT_TWINKLE
+//     #define RGBLIGHT_HUE_STEP 10
+//     #define RGBLIGHT_SAT_STEP 17
+//     #define RGBLIGHT_VAL_STEP 17
+// #endif
+
+// #ifdef RGB_MATRIX_ENABLE
+//     #define RGB_MATRIX_MAXIMUM_BRIGHTNESS RGBLIGHT_LIMIT_VAL
+//     #define RGB_MATRIX_LED_COUNT RGBLED_NUM
+//     #define RGB_MATRIX_SPLIT RGBLED_SPLIT
+//     #define SPLIT_TRANSPORT_MIRROR
+//     #define ENABLE_RGB_MATRIX_TYPING_HEATMAP
+//     #define ENABLE_RGB_MATRIX_DIGITAL_RAIN
+//     #define ENABLE_RGB_MATRIX_SOLID_REACTIVE
+// #endif
+
+// #define OLED_FONT_H "keyboards/crkbd/lib/glcdfont.c"
