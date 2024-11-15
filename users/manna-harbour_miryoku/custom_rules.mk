@@ -7,5 +7,5 @@ RGB_MATRIX_ENABLE = yes
 RGBLIGHT_ENABLE = no
 LTO_ENABLE      = yes
 
-DEFERRED_EXEC_ENABLED = yes
+DEFERRED_EXEC_ENABLE = yes
 # https://sunaku.github.io/home-row-mods.html
