@@ -68,6 +68,7 @@
 /* QMK */
 #define TAPPING_TERM 200
 #define IGNORE_MOD_TAP_INTERRUPT /* for rolling on mod-tap keys */
+# define SPLIT_WPM_ENABLE   // Enable WPM across split keyboards (+268).
 
 /* Miryoku */
 #define BILATERAL_COMBINATIONS_LIMIT_CHORD_TO_N_KEYS 4 /* GUI, Alt, Ctrl, Shift */
