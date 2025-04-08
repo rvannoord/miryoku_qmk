@@ -474,7 +474,7 @@ bool oled_task_user(void) {
         };*/
         // clang-format on
         //render_space();
-        oled_write_raw_P(monitor_logo1, sizeof(kmonitor_logo1));
+        oled_write_raw_P(monitor_logo1, sizeof(monitor_logo1));
     }
     return false;
 }
