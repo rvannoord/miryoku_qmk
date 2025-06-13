@@ -21,7 +21,7 @@ enum layers {
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_180; }
 
 // Spaceship OLED Code Starts Here
-/*
+
 
 unsigned int state = 0;
 
@@ -264,7 +264,7 @@ static void render_space(void) {
 
     state = (state + 1 + (wpm/15)) % (128*2);
 }
-*/
+
 // End of space oled stuff
 
 bool oled_task_user(void) {
@@ -338,7 +338,7 @@ bool oled_task_user(void) {
         //     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  3,  7, 15, 14, 30, 28, 60, 56,120,112,112,112,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,224,112,112,112,120, 56, 60, 28, 30, 14, 15,  7,  3,  1,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
         // };
 
-        static const char PROGMEM monitor_logo1[] = {
+        /*static const char PROGMEM monitor_logo1[] = {
             // 'Image', 128x64px
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -404,7 +404,7 @@ bool oled_task_user(void) {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x7f, 0x7f, 0x7f, 0x73, 0x61, 0x61, 0x61, 0x61, 0x61, 0x61,
 0x60, 0x00, 0x7f, 0x7f, 0x7f, 0x7f, 0x01, 0x01, 0x0f, 0x3f, 0x7f, 0x7c, 0x70, 0x40, 0x00, 0x7f,
 0x7f, 0x7f, 0x7f, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-        };
+        }; */
 
         /*static const char PROGMEM monitor_logo2[] = {
             // 'Image', 128x64px
@@ -474,8 +474,8 @@ bool oled_task_user(void) {
 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
         };*/
         // clang-format on
-        //render_space();
-        oled_write_raw_P(monitor_logo1, sizeof(monitor_logo1));
+        render_space();
+        //oled_write_raw_P(monitor_logo1, sizeof(monitor_logo1));
     }
     return false;
 }
