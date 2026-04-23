@@ -8,6 +8,13 @@
 // False home row mods adjustments https://docs.qmk.fm/tap_hold
 #define BILATERAL_COMBINATIONS
 
+// Slave-side OLED animation. Pick ONE (defaults to SPACESHIP if none set).
+//   OLED_SLAVE_ANIMATION_SPACESHIP
+//   OLED_SLAVE_ANIMATION_MONITOR1
+//   OLED_SLAVE_ANIMATION_MONITOR2
+//   OLED_SLAVE_ANIMATION_KYRIA
+#define OLED_SLAVE_ANIMATION_SPACESHIP
+
 #ifdef RGB_MATRIX_ENABLE
 #    define RGB_MATRIX_KEYPRESSES
 #    define ENABLE_RGB_MATRIX_TYPING_HEATMAP
