@@ -23,8 +23,6 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_
 // Spaceship OLED Code Starts Here
 
 
-unsigned int state = 0;
-
 static const char PROGMEM space_row_1[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0x00, 0x00, 0xc0, 0xfc, 0xff, 0xff, 0xff, 0xe1, 0xc0, 0xc0, 0xc0, 0x80, 0x80, 0x80, 0x38, 0x38,
@@ -222,47 +220,25 @@ static const char PROGMEM mask_row_4[] = {
 };
 
 static void render_space(void) {
-    char wpm = get_current_wpm();
-    char render_row[128];
-    int i;
-    oled_set_cursor(0,0);
-    for(i=0; i<wpm/4; i++) {
-        render_row[i] = pgm_read_byte(space_row_1+i+state);
-    };
-    for(i=wpm/4; i<128; i++) {
-        render_row[i] = (pgm_read_byte(space_row_1+i+state)&pgm_read_byte(mask_row_1+i-wpm/4)) | pgm_read_byte(ship_row_1+i-wpm/4);
-    };
-
-    oled_write_raw(render_row, 128);
-    // oled_write_raw_P(space_row_1, 128);
-    oled_set_cursor(0,1);
-    for(i=0; i<wpm/4; i++) {
-        render_row[i] = pgm_read_byte(space_row_2+i+state);
-    };
-    for(i=wpm/4; i<128; i++) {
-        render_row[i] = (pgm_read_byte(space_row_2+i+state)&pgm_read_byte(mask_row_2+i-wpm/4)) | pgm_read_byte(ship_row_2+i-wpm/4);
-    };
-    oled_write_raw(render_row, 128);
-    oled_set_cursor(0,2);
-    for(i=0; i<wpm/4; i++) {
-        render_row[i] = pgm_read_byte(space_row_3+i+state);
-    };
-    for(i=wpm/4; i<128; i++) {
-        render_row[i] = (pgm_read_byte(space_row_3+i+state)&pgm_read_byte(mask_row_3+i-wpm/4)) | pgm_read_byte(ship_row_3+i-wpm/4);
-    };
-
-    oled_write_raw(render_row, 128);
-    oled_set_cursor(0,3);
-    for(i=0; i<wpm/4; i++) {
-        render_row[i] = pgm_read_byte(space_row_4+i+state);
-    };
-    for(i=wpm/4; i<128; i++) {
-        render_row[i] = (pgm_read_byte(space_row_4+i+state)&pgm_read_byte(mask_row_4+i-wpm/4)) | pgm_read_byte(ship_row_4+i-wpm/4);
-    };
-
-    oled_write_raw(render_row, 128);
-
-    state = (state + 1 + (wpm/15)) % (128*2);
+    static uint16_t state = 0;
+    static const char *const space_rows[4] = {space_row_1, space_row_2, space_row_3, space_row_4};
+    static const char *const ship_rows[4]  = {ship_row_1,  ship_row_2,  ship_row_3,  ship_row_4};
+    static const char *const mask_rows[4]  = {mask_row_1,  mask_row_2,  mask_row_3,  mask_row_4};
+    uint8_t wpm = get_current_wpm();
+    uint8_t split = wpm / 4;
+    uint8_t render_row[128];
+    for (uint8_t row = 0; row < 4; row++) {
+        for (uint8_t i = 0; i < split; i++) {
+            render_row[i] = pgm_read_byte(space_rows[row] + i + state);
+        }
+        for (uint8_t i = split; i < 128; i++) {
+            render_row[i] = (pgm_read_byte(space_rows[row] + i + state) & pgm_read_byte(mask_rows[row] + i - split))
+                          | pgm_read_byte(ship_rows[row] + i - split);
+        }
+        oled_set_cursor(0, row);
+        oled_write_raw((char *)render_row, 128);
+    }
+    state = (state + 1 + (wpm / 15)) % (128 * 2);
 }
 
 // End of space oled stuff
