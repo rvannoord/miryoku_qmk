@@ -35,13 +35,26 @@ static void render_space(void) {
     static const char *const mask_rows[4]  = {mask_row_1,  mask_row_2,  mask_row_3,  mask_row_4};
 
     uint8_t wpm = get_current_wpm();
-    uint16_t frame_delay = (wpm > 75) ? 50 : (200 - (uint16_t)wpm * 2);
-    if (timer_elapsed32(last_anim) < frame_delay) return;
+    if (timer_elapsed32(last_anim) < 50) return;
     last_anim = timer_read32();
 
     uint8_t split = wpm / 4;
     uint8_t render_row[128];
 
+    // Padding rows use the background shifted half a cycle so they look like
+    // a different region of space without needing extra bitmaps.
+    uint16_t pad_state = (state + 128) % (128 * 2);
+
+    // Top 2 rows — pure background (reversed row order + offset scroll)
+    for (uint8_t p = 0; p < 2; p++) {
+        for (uint8_t i = 0; i < 128; i++) {
+            render_row[i] = pgm_read_byte(space_rows[3 - p] + i + pad_state);
+        }
+        oled_set_cursor(0, p);
+        oled_write_raw((char *)render_row, 128);
+    }
+
+    // Ship rows (OLED rows 2–5), centred vertically
     for (uint8_t row = 0; row < 4; row++) {
         for (uint8_t i = 0; i < split; i++) {
             render_row[i] = pgm_read_byte(space_rows[row] + i + state);
@@ -50,7 +63,16 @@ static void render_space(void) {
             render_row[i] = (pgm_read_byte(space_rows[row] + i + state) & pgm_read_byte(mask_rows[row] + i - split))
                           | pgm_read_byte(ship_rows[row] + i - split);
         }
-        oled_set_cursor(0, row);
+        oled_set_cursor(0, row + 2);
+        oled_write_raw((char *)render_row, 128);
+    }
+
+    // Bottom 2 rows — pure background (forward row order + offset scroll)
+    for (uint8_t p = 0; p < 2; p++) {
+        for (uint8_t i = 0; i < 128; i++) {
+            render_row[i] = pgm_read_byte(space_rows[p] + i + pad_state);
+        }
+        oled_set_cursor(0, p + 6);
         oled_write_raw((char *)render_row, 128);
     }
 
