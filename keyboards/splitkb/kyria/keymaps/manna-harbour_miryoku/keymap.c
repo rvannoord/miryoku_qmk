@@ -222,11 +222,16 @@ static const char PROGMEM mask_row_4[] = {
 
 static void render_space(void) {
     static uint16_t state = 0;
+    static uint32_t last_anim = 0;
     static const char *const space_rows[4] = {space_row_1, space_row_2, space_row_3, space_row_4};
     static const char *const ship_rows[4]  = {ship_row_1,  ship_row_2,  ship_row_3,  ship_row_4};
     static const char *const mask_rows[4]  = {mask_row_1,  mask_row_2,  mask_row_3,  mask_row_4};
 
     uint8_t wpm = get_current_wpm();
+    uint16_t frame_delay = (wpm > 75) ? 50 : (200 - (uint16_t)wpm * 2);
+    if (timer_elapsed32(last_anim) < frame_delay) return;
+    last_anim = timer_read32();
+
     uint8_t split = wpm / 4;
     uint8_t render_row[128];
 
@@ -249,6 +254,8 @@ static void render_space(void) {
 #endif  // OLED_SLAVE_ANIMATION_SPACESHIP
 
 bool oled_task_user(void) {
+    if (!is_oled_on()) return false;
+
     if (is_keyboard_master()) {
         // QMK Logo and version information
         // clang-format off
