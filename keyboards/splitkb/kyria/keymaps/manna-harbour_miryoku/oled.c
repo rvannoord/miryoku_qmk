@@ -41,20 +41,21 @@ static void render_space(void) {
     uint8_t split = wpm / 4;
     uint8_t render_row[128];
 
-    // Padding rows use the background shifted half a cycle so they look like
-    // a different region of space without needing extra bitmaps.
-    uint16_t pad_state = (state + 128) % (128 * 2);
+    // All 8 OLED rows use the same state to avoid horizontal cuts at row
+    // boundaries. The 4 bitmaps tile as {3,4,1,2,3,4,1,2} so the ship
+    // sits centred in rows 2-5 and the wrap point (row_4 -> row_1) lands
+    // where both bitmaps are sparse, keeping the join clean.
 
-    // Top 2 rows — pure background (reversed row order + offset scroll)
+    // Top 2 rows — background only (tile positions 3 and 4)
     for (uint8_t p = 0; p < 2; p++) {
         for (uint8_t i = 0; i < 128; i++) {
-            render_row[i] = pgm_read_byte(space_rows[3 - p] + i + pad_state);
+            render_row[i] = pgm_read_byte(space_rows[2 + p] + i + state);
         }
         oled_set_cursor(0, p);
         oled_write_raw((char *)render_row, 128);
     }
 
-    // Ship rows (OLED rows 2–5), centred vertically
+    // Ship rows (OLED rows 2–5) — tile positions 1-4, ship composited
     for (uint8_t row = 0; row < 4; row++) {
         for (uint8_t i = 0; i < split; i++) {
             render_row[i] = pgm_read_byte(space_rows[row] + i + state);
@@ -67,10 +68,10 @@ static void render_space(void) {
         oled_write_raw((char *)render_row, 128);
     }
 
-    // Bottom 2 rows — pure background (forward row order + offset scroll)
+    // Bottom 2 rows — background only (tile positions 1 and 2)
     for (uint8_t p = 0; p < 2; p++) {
         for (uint8_t i = 0; i < 128; i++) {
-            render_row[i] = pgm_read_byte(space_rows[p] + i + pad_state);
+            render_row[i] = pgm_read_byte(space_rows[p] + i + state);
         }
         oled_set_cursor(0, p + 6);
         oled_write_raw((char *)render_row, 128);
