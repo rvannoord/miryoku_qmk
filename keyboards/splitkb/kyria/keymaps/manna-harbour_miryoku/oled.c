@@ -30,7 +30,16 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_
 static void render_space(void) {
     static uint16_t state    = 0;
     static uint32_t last_anim = 0;
-    static const char *const space_rows[4] = {space_row_1, space_row_2, space_row_3, space_row_4};
+    static const char *const space_rows[8] = {
+        space_top_row_1,
+        space_top_row_2,
+        space_row_1,
+        space_row_2,
+        space_row_3,
+        space_row_4,
+        space_bottom_row_1,
+        space_bottom_row_2,
+    };
     static const char *const ship_rows[4]  = {ship_row_1,  ship_row_2,  ship_row_3,  ship_row_4};
     static const char *const mask_rows[4]  = {mask_row_1,  mask_row_2,  mask_row_3,  mask_row_4};
 
@@ -41,37 +50,32 @@ static void render_space(void) {
     uint8_t split = wpm / 4;
     uint8_t render_row[128];
 
-    // All 8 OLED rows use the same state to avoid horizontal cuts at row
-    // boundaries. The 4 bitmaps tile as {3,4,1,2,3,4,1,2} so the ship
-    // sits centred in rows 2-5 and the wrap point (row_4 -> row_1) lands
-    // where both bitmaps are sparse, keeping the join clean.
-
-    // Top 2 rows — background only (tile positions 3 and 4)
+    // Top 2 rows: new background art that completes the clipped planet.
     for (uint8_t p = 0; p < 2; p++) {
         for (uint8_t i = 0; i < 128; i++) {
-            render_row[i] = pgm_read_byte(space_rows[2 + p] + i + state);
+            render_row[i] = pgm_read_byte(space_rows[p] + i + state);
         }
         oled_set_cursor(0, p);
         oled_write_raw((char *)render_row, 128);
     }
 
-    // Ship rows (OLED rows 2–5) — tile positions 1-4, ship composited
+    // Ship rows (OLED rows 2-5): original 4-page animation, centred vertically.
     for (uint8_t row = 0; row < 4; row++) {
         for (uint8_t i = 0; i < split; i++) {
-            render_row[i] = pgm_read_byte(space_rows[row] + i + state);
+            render_row[i] = pgm_read_byte(space_rows[row + 2] + i + state);
         }
         for (uint8_t i = split; i < 128; i++) {
-            render_row[i] = (pgm_read_byte(space_rows[row] + i + state) & pgm_read_byte(mask_rows[row] + i - split))
+            render_row[i] = (pgm_read_byte(space_rows[row + 2] + i + state) & pgm_read_byte(mask_rows[row] + i - split))
                           | pgm_read_byte(ship_rows[row] + i - split);
         }
         oled_set_cursor(0, row + 2);
         oled_write_raw((char *)render_row, 128);
     }
 
-    // Bottom 2 rows — background only (tile positions 1 and 2)
+    // Bottom 2 rows: new space content, not reused from the original rows.
     for (uint8_t p = 0; p < 2; p++) {
         for (uint8_t i = 0; i < 128; i++) {
-            render_row[i] = pgm_read_byte(space_rows[p] + i + state);
+            render_row[i] = pgm_read_byte(space_rows[p + 6] + i + state);
         }
         oled_set_cursor(0, p + 6);
         oled_write_raw((char *)render_row, 128);
